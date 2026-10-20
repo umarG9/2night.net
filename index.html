@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ha">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2 Night</title>
+<style>
+:root{--bg:#04050B;--glass:rgba(255,255,255,.06);--line:rgba(212,175,55,.28);--gold:#D4AF37;--gold2:#F6DE8D;--blue:#1B5CFF;--wine:#8B1A3A;--mut:#9AA0B4}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,"Noto Sans Arabic","Noto Sans SC",sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:#fff;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 12% 8%,#1B5CFF55,transparent 42%),radial-gradient(circle at 95% 35%,#8B1A3A88,transparent 45%),radial-gradient(circle at 40% 105%,#D4AF3733,transparent 50%),#04050B}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(45deg,transparent 48.5%,rgba(212,175,55,.13) 49.5%,rgba(212,175,55,.13) 50.5%,transparent 51.5%),linear-gradient(-45deg,transparent 48.5%,rgba(212,175,55,.13) 49.5%,rgba(212,175,55,.13) 50.5%,transparent 51.5%);background-size:46px 46px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px}
+.logo{font-weight:900;font-size:21px;letter-spacing:2px;background:linear-gradient(90deg,var(--gold2),var(--gold),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tr{display:flex;gap:6px;align-items:center}
+.chip{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--gold2)}
+select{background:#0b0e1c;color:var(--gold2);border:1px solid var(--line);border-radius:20px;padding:6px 8px;font-size:12px;outline:none}
+.screen{display:none;flex:1;overflow-y:auto;padding:4px 16px 110px}
+.screen.active{display:block;animation:in .35s}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2{font-size:20px;margin:6px 0 2px;color:var(--gold2)}
+.sub{color:var(--mut);font-size:13px;margin-bottom:12px}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:14px;margin-bottom:12px;backdrop-filter:blur(14px)}
+.btn{background:linear-gradient(135deg,var(--gold2),var(--gold) 55%,#9c7a1c);color:#1a1200;border:none;padding:13px 18px;border-radius:26px;font-weight:800;cursor:pointer;width:100%;font-size:15px;box-shadow:0 6px 24px #D4AF3744}
+.btn.ghost{background:var(--glass);color:#fff;border:1px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px}
+.nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;background:rgba(8,10,22,.8);border:1px solid var(--line);border-radius:30px;padding:8px;backdrop-filter:blur(20px);z-index:10}
+.nav button{background:none;border:none;color:var(--mut);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border-radius:20px;cursor:pointer}
+.nav button span{font-size:20px}
+.nav button.active{color:var(--gold2);background:linear-gradient(135deg,#1B5CFF44,#8B1A3A66)}
+#sky{width:100%;height:290px;border-radius:26px;display:block;border:1px solid var(--line);background:#02040a}
+.hud{display:flex;justify-content:space-between;margin:10px 0;font-size:12px;color:var(--mut)}
+.hud b{display:block;color:var(--gold2);font-size:18px}
+.dests{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
+.dest{flex:0 0 auto;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:10px 14px;font-size:13px;cursor:pointer;color:#fff}
+.dest.sel{border-color:var(--gold);background:#D4AF3722}
+.bar{height:6px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--gold),var(--wine))}
+.avs{display:flex;margin:8px 0}
+.avs span{width:34px;height:34px;border-radius:50%;background:#111530;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-inline-end:-8px;font-size:18px}
+.bub{background:var(--glass);border:1px solid var(--line);padding:10px 14px;border-radius:20px;margin:8px 0;max-width:85%;word-wrap:break-word}
+.bub.me{margin-inline-start:auto;background:linear-gradient(135deg,#1B5CFF,#6D0F26);border-color:var(--gold)}
+.bub small{display:block;opacity:.7;font-size:11px;margin-bottom:2px;color:var(--gold2)}
+.kb{position:fixed;left:12px;right:12px;bottom:calc(136px + env(safe-area-inset-bottom,0px));display:none;gap:6px;align-items:center;z-index:9}
+.kb.show,.chatbar.show{display:flex}
+.keys{display:flex;gap:5px;overflow-x:auto;flex:1;padding:4px 0}
+.keys button{flex:0 0 auto;min-width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#0b0e1c;color:var(--gold2);font-size:18px;cursor:pointer}
+.chatbar{position:fixed;left:12px;right:12px;bottom:calc(78px + env(safe-area-inset-bottom,0px));display:none;gap:8px;z-index:9}
+.chatbar .btn{width:54px;padding:0}
+input[type=text]{width:100%;padding:13px 16px;border-radius:26px;border:1px solid var(--line);background:rgba(8,10,22,.92);color:#fff;outline:none;font-size:15px}
+#room{padding-bottom:210px}
+.vg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.vi{height:130px;border-radius:18px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;color:var(--mut);font-size:13px}
+.vi img{width:100%;height:100%;object-fit:cover}
+.vi .del{position:absolute;top:6px;inset-inline-end:6px;background:#000a;color:#fff;border:none;border-radius:50%;width:26px;height:26px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{flex:1;padding:10px;border-radius:20px;border:1px solid var(--line);background:var(--glass);color:#fff;font-weight:700}
+.tabs button.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1200;border:none}
+.pc{height:290px;border-radius:26px;background:linear-gradient(160deg,#0b2a8f,#4a0b1f);border:1px solid var(--gold);display:flex;flex-direction:column;justify-content:flex-end;padding:18px;position:relative;overflow:hidden}
+.pc .em{position:absolute;top:28px;left:0;right:0;text-align:center;font-size:92px}
+.pc h3{font-size:24px;color:var(--gold2)}.pc p{opacity:.85;font-size:13px}
+.fut{display:flex;gap:12px;align-items:center}
+.fut .ic{font-size:28px;width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#1B5CFF44,#8B1A3A77);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.fut b{font-size:15px}.fut p{color:var(--mut);font-size:12px;margin-top:2px}
+.tag{font-size:10px;background:var(--wine);border-radius:8px;padding:2px 7px;margin-inline-start:6px;vertical-align:middle}
+.sw{margin-inline-start:auto;flex:0 0 auto;width:46px;height:26px;border-radius:14px;background:rgba(255,255,255,.15);position:relative;border:none;cursor:pointer}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:var(--gold)}.sw.on::after{left:23px}
+.nav button{padding:6px 6px;font-size:10px}
+input[type=date]{padding:11px;border-radius:16px;border:1px solid var(--line);background:#0b0e1c;color:#fff;color-scheme:dark;min-width:0;outline:none}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(4,5,11,.97);display:none;flex-direction:column;justify-content:center;padding:24px;gap:12px;overflow-y:auto}
+.ov.show{display:flex}
+.bp{border:1px solid var(--gold);border-radius:20px;padding:14px;margin-bottom:12px;background:linear-gradient(135deg,#0b2a8f55,#4a0b1f88);position:relative}
+.bp .rt{font-size:22px;font-weight:900;color:var(--gold2)}
+.bp .dl{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.fr{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fr .pr{color:var(--gold2);font-weight:800;font-size:17px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">💎 2 NIGHT</div>
+  <div class="tr">
+    <select id="lang" aria-label="Language"><option value="ha">Hausa</option><option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="zh">中文</option><option value="es">Español</option></select>
+    <div class="chip" id="coin">₦0</div>
+  </div>
+</div>
+
+<div id="fly" class="screen active">
+  <h2 data-i="fly" data-e="🚀 "></h2>
+  <p class="sub" data-i="flySub"></p>
+  <canvas id="sky"></canvas>
+  <div class="hud"><div><span data-i="loc"></span><b id="hLoc">Kano</b></div><div><span data-i="alt"></span><b id="hAlt">0 km</b></div><div><span data-i="spd"></span><b id="hSpd">0</b></div></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="dests" id="dests"></div>
+  <button class="btn" id="goBtn" onclick="takeoff()"></button>
+  <div class="glass" id="arrive" style="display:none;margin-top:12px">
+    <b id="aTitle"></b><p class="sub" id="aSub" style="margin:4px 0"></p><div class="avs" id="aAvs"></div>
+    <button class="btn ghost" onclick="joinPlace()" data-i="join" data-e="💬 "></button>
+  </div>
+</div>
+
+<div id="room" class="screen">
+  <h2 id="roomName"></h2>
+  <p class="sub"><span style="color:var(--gold)">●</span> <span id="onl">1.2k</span> <span data-i="onl"></span></p>
+  <div id="chatBox"></div>
+</div>
+
+<div id="vault" class="screen">
+  <h2 data-i="vault" data-e="🔒 "></h2><p class="sub" data-i="vaultSub"></p>
+  <input type="file" id="fileInput" accept="image/*" style="display:none">
+  <button class="btn" onclick="document.getElementById('fileInput').click()" data-i="add"></button>
+  <div class="vg" id="vGrid"></div>
+</div>
+
+<div id="aure" class="screen">
+  <h2 data-i="aure" data-e="💍 "></h2><p class="sub" data-i="aureSub"></p>
+  <div class="tabs"><button id="tW" class="on" onclick="setG('w')" data-i="w"></button><button id="tM" onclick="setG('m')" data-i="m"></button></div>
+  <div class="pc"><div class="em" id="pEm"></div><h3 id="pN"></h3><p id="pI"></p></div>
+  <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="swipe(false)" data-i="skip" data-e="✖ "></button><button class="btn" onclick="swipe(true)" data-i="like" data-e="❤ "></button></div>
+  <p class="sub" id="lk" style="text-align:center;margin-top:10px"></p>
+</div>
+
+<div id="future" class="screen">
+  <h2 data-i="fut" data-e="✨ "></h2><p class="sub" data-i="futSub"></p>
+  <div id="fList"></div>
+  <div class="glass"><div class="fut"><div class="ic">💰</div><div><b>Earn</b><p data-i="earnD"></p></div></div>
+  <div class="row"><button class="btn ghost" style="margin-top:10px" onclick="addEarn(500)" data-i="inv"></button><button class="btn ghost" style="margin-top:10px" onclick="addEarn(50)" data-i="ad"></button></div></div>
+</div>
+
+<div id="tix" class="screen">
+ <h2 data-i="tix" data-e="✈️ "></h2><p class="sub" data-i="tixSub"></p>
+ <div class="glass">
+  <div class="row"><div style="flex:1"><div class="sub" style="margin:0 0 4px" data-i="from"></div><select id="fFrom" style="width:100%"></select></div><div style="flex:1"><div class="sub" style="margin:0 0 4px" data-i="to"></div><select id="fTo" style="width:100%"></select></div></div>
+  <div class="row" style="margin-top:10px"><input type="date" id="fDate" style="flex:1"><select id="fCls"></select><select id="fPax"></select></div>
+  <button class="btn" style="margin-top:12px" onclick="searchF()" data-i="search"></button>
+ </div>
+ <div id="fRes"></div>
+ <h2 data-i="myT" data-e="🎫 "></h2><div id="fTix"></div>
+ <p class="sub" data-i="fareNote"></p>
+ <button class="chip" id="outBtn" onclick="logout()" style="cursor:pointer"></button>
+</div>
+
+<div class="ov" id="ov">
+ <select id="lang2" style="align-self:flex-end"><option value="ha">Hausa</option><option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="zh">中文</option><option value="es">Español</option></select>
+ <div class="logo" style="font-size:30px;text-align:center">💎 2 NIGHT</div>
+ <h2 data-i="lgT" style="text-align:center"></h2>
+ <div id="lgS1"><p class="sub" data-i="lgSub" style="text-align:center"></p>
+  <div class="row"><select id="cc" style="max-width:112px"><option value="234">🇳🇬 +234</option><option value="227">🇳🇪 +227</option><option value="233">🇬🇭 +233</option><option value="229">🇧🇯 +229</option><option value="228">🇹🇬 +228</option><option value="237">🇨🇲 +237</option><option value="235">🇹🇩 +235</option><option value="249">🇸🇩 +249</option><option value="966">🇸🇦 +966</option><option value="971">🇦🇪 +971</option><option value="20">🇪🇬 +20</option><option value="33">🇫🇷 +33</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option><option value="1">🇺🇸 +1</option><option value="86">🇨🇳 +86</option></select><input type="text" id="ph" inputmode="tel" placeholder="8012345678" autocomplete="tel" dir="ltr"></div>
+  <button class="btn" style="margin-top:12px" onclick="sendOtp(false)" data-i="sendC"></button></div>
+ <div id="lgS2" style="display:none"><p class="sub" style="text-align:center"><span data-i="codeSub"></span> <b id="lgPh" style="color:var(--gold2)" dir="ltr"></b></p>
+  <div class="glass" id="demoB" style="font-size:12px;color:var(--gold2);word-break:break-all"></div>
+  <input type="text" id="otpIn" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="text-align:center;letter-spacing:8px;font-size:22px" dir="ltr">
+  <button class="btn" style="margin-top:12px" onclick="verifyOtp()" data-i="verify"></button>
+  <div class="row"><button class="btn ghost" id="rsBtn" style="margin-top:8px" onclick="sendOtp(true)"></button><button class="btn ghost" style="margin-top:8px" onclick="showLogin()" data-i="change"></button></div></div>
+ <p id="lgErr" style="color:#ff7a90;text-align:center;font-size:13px;min-height:18px"></p>
+</div>
+
+<div class="kb" id="kb"><select id="kbLang" aria-label="Keyboard"><option value="ha">⌨ Hausa</option><option value="en">⌨ English</option><option value="ar">⌨ العربية</option><option value="fr">⌨ Français</option><option value="zh">⌨ 中文</option><option value="es">⌨ Español</option></select><div class="keys" id="keys"></div></div>
+<div class="chatbar" id="cbar"><input type="text" id="msg" dir="auto" autocomplete="off"><button class="btn" onclick="sendMsg()">➤</button></div>
+
+<div class="nav">
+  <button class="active" data-s="fly"><span>🚀</span><i data-i="nFly" style="font-style:normal"></i></button>
+  <button data-s="room"><span>💬</span><i data-i="nChat" style="font-style:normal"></i></button>
+  <button data-s="vault"><span>🔒</span><i data-i="nVault" style="font-style:normal"></i></button>
+  <button data-s="aure"><span>💍</span><i data-i="nAure" style="font-style:normal"></i></button>
+  <button data-s="tix"><span>✈️</span><i data-i="nTix" style="font-style:normal"></i></button>
+  <button data-s="future"><span>✨</span><i data-i="nFut" style="font-style:normal"></i></button>
+</div>
+
+<script>
+var L={
+ha:{fly:'Tashi Sama',flySub:'Zaɓi inda kake so, ka tashi, ka isa cikin daƙiƙu.',loc:'Wuri',alt:'Tsawo',spd:'Gudu',go:'🚀 Tashi',flying:'Ana tashi…',arr:'Ka isa',arrSub:'mutane suna nan yanzu.',join:'Shiga ɗakin wurin',onl:'suna kan layi',room:'Ɗakin',vault:'Private Vault',vaultSub:'Hotuna naka kaɗai. Ba kowa da zai gani.',add:'+ Ajiye hoto',empty:'Babu komai tukuna',aure:'Aure & Match',aureSub:'Nemi abokin rayuwa.',w:'Mata',m:'Maza',skip:'Tsallake',like:'Na so',liked:'Waɗanda ka so',fut:'Gaba',futSub:'Abubuwan da babu su a kowace app tukuna. Kunna abin da kake so.',earnD:'Samu kuɗi idan ka gayyato aboki',inv:'Gayyata +₦500',ad:'Talla +₦50',ph:'Rubuta sako...',hi:'Sannu da zuwa 2 Night! 👋',fit:'ya dace da kai',now:'Yana aiki',soon:'Nan gaba',nFly:'Tashi',nChat:'Chat',nVault:'Vault',nAure:'Aure',nFut:'Gaba',
+F:[['Tashi Sama','Yi tafiya zuwa kowane wuri cikin daƙiƙu'],['Hologram Call','Kira da hoton mutum na 3D a gabanka'],['AI Mai Fassara','Rubuta da Hausa, abokinka ya karanta da yarensa'],['Memory Orbs','Tunawa da lokutanka a ƙwallon haske'],['Live Earth','Ka ga mutane kusa da kai a taswira']]},
+en:{fly:'Fly Anywhere',flySub:'Pick a place, take off, and arrive in seconds.',loc:'Location',alt:'Altitude',spd:'Speed',go:'🚀 Take off',flying:'Flying…',arr:'You arrived in',arrSub:'people are here now.',join:'Join the place room',onl:'online',room:'Room',vault:'Private Vault',vaultSub:'Your photos only. Nobody else can see them.',add:'+ Add photo',empty:'Nothing here yet',aure:'Marriage & Match',aureSub:'Find a life partner.',w:'Women',m:'Men',skip:'Skip',like:'Like',liked:'Liked',fut:'Future',futSub:'Things no app has yet. Turn on what you want first.',earnD:'Earn money when you invite a friend',inv:'Invite +₦500',ad:'Ad +₦50',ph:'Type a message...',hi:'Welcome to 2 Night! 👋',fit:'match with you',now:'Live',soon:'Coming',nFly:'Fly',nChat:'Chat',nVault:'Vault',nAure:'Match',nFut:'Future',
+F:[['Fly Anywhere','Travel to any place in seconds'],['Hologram Call','A 3D hologram of the person in front of you'],['AI Translator','Write in your language, they read in theirs'],['Memory Orbs','Your moments as glowing orbs you can enter'],['Live Earth','See people near you on a live globe']]},
+ar:{fly:'طِر إلى أي مكان',flySub:'اختر مكانًا، أقلع، ووصل خلال ثوانٍ.',loc:'الموقع',alt:'الارتفاع',spd:'السرعة',go:'🚀 أقلع',flying:'جارٍ التحليق…',arr:'وصلتَ إلى',arrSub:'أشخاص هنا الآن.',join:'ادخل غرفة المكان',onl:'متصل',room:'غرفة',vault:'الخزنة الخاصة',vaultSub:'صورك أنت فقط. لا أحد غيرك يراها.',add:'+ أضف صورة',empty:'لا شيء بعد',aure:'الزواج والتعارف',aureSub:'ابحث عن شريك الحياة.',w:'نساء',m:'رجال',skip:'تخطَّ',like:'أعجبني',liked:'المعجَب بهم',fut:'المستقبل',futSub:'أشياء لا يملكها أي تطبيق بعد. فعّل ما تريد أولًا.',earnD:'اكسب المال عند دعوة صديق',inv:'ادعُ +₦500',ad:'إعلان +₦50',ph:'اكتب رسالة...',hi:'مرحبًا بك في 2 Night! 👋',fit:'تطابق معك',now:'يعمل',soon:'قريبًا',nFly:'طيران',nChat:'دردشة',nVault:'الخزنة',nAure:'تعارف',nFut:'المستقبل',
+F:[['طِر إلى أي مكان','سافر إلى أي مكان في ثوانٍ'],['مكالمة هولوغرام','صورة ثلاثية الأبعاد للشخص أمامك'],['مترجم ذكي','اكتب بلغتك ويقرأ هو بلغته'],['كرات الذكريات','لحظاتك ككرات مضيئة يمكنك دخولها'],['الأرض الحية','شاهد الأشخاص القريبين منك على الخريطة']]},
+fr:{fly:'Voler partout',flySub:'Choisissez un lieu, décollez, arrivez en quelques secondes.',loc:'Lieu',alt:'Altitude',spd:'Vitesse',go:'🚀 Décoller',flying:'En vol…',arr:'Vous êtes arrivé à',arrSub:'personnes sont ici maintenant.',join:'Rejoindre le salon du lieu',onl:'en ligne',room:'Salon',vault:'Coffre privé',vaultSub:'Vos photos seulement. Personne d’autre ne les voit.',add:'+ Ajouter une photo',empty:'Rien pour l’instant',aure:'Mariage & Rencontres',aureSub:'Trouvez un partenaire de vie.',w:'Femmes',m:'Hommes',skip:'Passer',like:'J’aime',liked:'Aimés',fut:'Futur',futSub:'Ce qu’aucune appli n’a encore. Activez ce que vous voulez en premier.',earnD:'Gagnez de l’argent en invitant un ami',inv:'Inviter +₦500',ad:'Pub +₦50',ph:'Écrire un message...',hi:'Bienvenue sur 2 Night ! 👋',fit:'compatible avec vous',now:'Actif',soon:'Bientôt',nFly:'Voler',nChat:'Chat',nVault:'Coffre',nAure:'Match',nFut:'Futur',
+F:[['Voler partout','Voyagez n’importe où en quelques secondes'],['Appel hologramme','Un hologramme 3D de la personne devant vous'],['Traducteur IA','Écrivez dans votre langue, il lit dans la sienne'],['Orbes de souvenirs','Vos moments en orbes lumineux où entrer'],['Terre en direct','Voyez les gens près de vous sur le globe']]},
+zh:{fly:'飞往任何地方',flySub:'选择地点，起飞，几秒钟内抵达。',loc:'位置',alt:'高度',spd:'速度',go:'🚀 起飞',flying:'飞行中…',arr:'你已抵达',arrSub:'人此刻在这里。',join:'进入该地聊天室',onl:'在线',room:'聊天室',vault:'私密保险库',vaultSub:'只有你能看到你的照片。',add:'+ 添加照片',empty:'暂无内容',aure:'婚恋与匹配',aureSub:'寻找人生伴侣。',w:'女生',m:'男生',skip:'跳过',like:'喜欢',liked:'已喜欢',fut:'未来',futSub:'目前没有任何应用拥有的功能。先开启你想要的。',earnD:'邀请朋友即可赚钱',inv:'邀请 +₦500',ad:'广告 +₦50',ph:'输入消息...',hi:'欢迎来到 2 Night！👋',fit:'与你匹配',now:'已上线',soon:'即将推出',nFly:'飞行',nChat:'聊天',nVault:'保险库',nAure:'匹配',nFut:'未来',
+F:[['飞往任何地方','几秒钟内前往任何地方'],['全息通话','对方的3D全息影像出现在你面前'],['AI翻译','用你的语言写，对方用他的语言读'],['记忆光球','把你的时刻变成可进入的发光球'],['实时地球','在地球上看到你附近的人']]},
+es:{fly:'Vuela a cualquier lugar',flySub:'Elige un lugar, despega y llega en segundos.',loc:'Lugar',alt:'Altitud',spd:'Velocidad',go:'🚀 Despegar',flying:'Volando…',arr:'Has llegado a',arrSub:'personas están aquí ahora.',join:'Unirse a la sala del lugar',onl:'en línea',room:'Sala',vault:'Bóveda privada',vaultSub:'Solo tus fotos. Nadie más las ve.',add:'+ Añadir foto',empty:'Aún no hay nada',aure:'Matrimonio y Match',aureSub:'Encuentra pareja para la vida.',w:'Mujeres',m:'Hombres',skip:'Omitir',like:'Me gusta',liked:'Te gustaron',fut:'Futuro',futSub:'Cosas que ninguna app tiene aún. Activa lo que quieras primero.',earnD:'Gana dinero al invitar a un amigo',inv:'Invitar +₦500',ad:'Anuncio +₦50',ph:'Escribe un mensaje...',hi:'¡Bienvenido a 2 Night! 👋',fit:'compatible contigo',now:'Activo',soon:'Pronto',nFly:'Volar',nChat:'Chat',nVault:'Bóveda',nAure:'Match',nFut:'Futuro',
+F:[['Vuela a cualquier lugar','Viaja a cualquier sitio en segundos'],['Llamada holograma','Un holograma 3D de la persona frente a ti'],['Traductor IA','Escribe en tu idioma, ellos leen en el suyo'],['Orbes de recuerdos','Tus momentos como orbes luminosos donde entrar'],['Tierra en vivo','Mira a la gente cerca de ti en el globo']]}
+};
+var L2={
+ha:{nTix:'Jirgi',tix:'Sayi Tikitin Jirgi',tixSub:'Zaɓi daga, zuwa, kwanan wata, ka sayi tikiti.',search:'Nemi jirgi',from:'Daga',to:'Zuwa',eco:'Economy',biz:'Business',pax:'fasinja',book:'Zaɓa',name:'Cikakken suna (kamar a ID)',pay:'Biya',cancel:'Soke',myT:'Tikitina',noT:'Babu tikiti tukuna',fareNote:'Farashin na gwaji ne. Biyan kuɗi da jirage na gaske suna buƙatar haɗa Paystack/Flutterwave da kamfanin jirgi.',pass:'Fasinja',code:'Lambar tikiti',same:'Zaɓi wurare daban-daban guda biyu.',lgT:'Shiga 2 Night',lgSub:'Saka lambar wayarka, za a aiko maka lambar tabbatarwa (OTP).',sendC:'Aika lambar OTP',codeSub:'Saka lamba 6 da aka aika zuwa',verify:'Tabbatar',resend:'Sake aikawa',change:'Canja lamba',demo:'GWAJI: ba a haɗa SMS server ba tukuna, lambar ita ce:',badNum:'Lambar waya ba daidai ba ce.',badCode:'Lambar OTP ba daidai ba ce.',tooMany:'Ƙoƙari da yawa. Nemi sabuwar lamba.',expired:'Lambar ta ƙare. Nemi sabuwa.',logout:'Fita',nameReq:'Rubuta suna.'},
+en:{nTix:'Flights',tix:'Buy Flight Tickets',tixSub:'Pick from, to and date, then buy your ticket.',search:'Search flights',from:'From',to:'To',eco:'Economy',biz:'Business',pax:'pax',book:'Select',name:'Full name (as on ID)',pay:'Pay',cancel:'Cancel',myT:'My tickets',noT:'No tickets yet',fareNote:'Fares are samples. Real payment and flights need Paystack/Flutterwave and an airline API.',pass:'Passenger',code:'Booking code',same:'Choose two different places.',lgT:'Sign in to 2 Night',lgSub:'Enter your phone number and we will send a verification code (OTP).',sendC:'Send OTP code',codeSub:'Enter the 6-digit code sent to',verify:'Verify',resend:'Resend',change:'Change number',demo:'DEMO: no SMS server is connected yet, so the code is:',badNum:'Invalid phone number.',badCode:'Wrong OTP code.',tooMany:'Too many attempts. Request a new code.',expired:'Code expired. Request a new one.',logout:'Log out',nameReq:'Enter a name.'},
+ar:{nTix:'رحلات',tix:'احجز تذاكر الطيران',tixSub:'اختر من وإلى والتاريخ ثم اشترِ تذكرتك.',search:'ابحث عن رحلة',from:'من',to:'إلى',eco:'اقتصادية',biz:'رجال الأعمال',pax:'مسافر',book:'اختر',name:'الاسم الكامل (كما في الهوية)',pay:'ادفع',cancel:'إلغاء',myT:'تذاكري',noT:'لا توجد تذاكر بعد',fareNote:'الأسعار تجريبية. الدفع والرحلات الحقيقية تتطلب Paystack/Flutterwave وواجهة شركة طيران.',pass:'المسافر',code:'رمز الحجز',same:'اختر مكانين مختلفين.',lgT:'تسجيل الدخول إلى 2 Night',lgSub:'أدخل رقم هاتفك وسنرسل لك رمز التحقق (OTP).',sendC:'أرسل رمز OTP',codeSub:'أدخل الرمز المكوّن من 6 أرقام المُرسل إلى',verify:'تحقق',resend:'إعادة الإرسال',change:'تغيير الرقم',demo:'تجريبي: لم يتم ربط خادم SMS بعد، والرمز هو:',badNum:'رقم هاتف غير صحيح.',badCode:'رمز OTP خاطئ.',tooMany:'محاولات كثيرة. اطلب رمزًا جديدًا.',expired:'انتهت صلاحية الرمز. اطلب رمزًا جديدًا.',logout:'خروج',nameReq:'اكتب الاسم.'},
+fr:{nTix:'Vols',tix:'Acheter des billets d’avion',tixSub:'Choisissez départ, arrivée et date, puis achetez.',search:'Chercher un vol',from:'De',to:'Vers',eco:'Économique',biz:'Affaires',pax:'pass.',book:'Choisir',name:'Nom complet (comme sur la pièce)',pay:'Payer',cancel:'Annuler',myT:'Mes billets',noT:'Aucun billet',fareNote:'Tarifs fictifs. Le vrai paiement et les vols exigent Paystack/Flutterwave et une API de compagnie.',pass:'Passager',code:'Code de réservation',same:'Choisissez deux lieux différents.',lgT:'Connexion à 2 Night',lgSub:'Entrez votre numéro, nous enverrons un code de vérification (OTP).',sendC:'Envoyer le code OTP',codeSub:'Entrez le code à 6 chiffres envoyé au',verify:'Vérifier',resend:'Renvoyer',change:'Changer de numéro',demo:'DÉMO : aucun serveur SMS n’est connecté, le code est :',badNum:'Numéro invalide.',badCode:'Code OTP incorrect.',tooMany:'Trop d’essais. Demandez un nouveau code.',expired:'Code expiré. Demandez-en un nouveau.',logout:'Déconnexion',nameReq:'Saisissez un nom.'},
+zh:{nTix:'机票',tix:'购买机票',tixSub:'选择出发地、目的地和日期，然后购票。',search:'搜索航班',from:'出发',to:'到达',eco:'经济舱',biz:'商务舱',pax:'位乘客',book:'选择',name:'全名（与证件一致）',pay:'支付',cancel:'取消',myT:'我的机票',noT:'暂无机票',fareNote:'票价仅为示例。真实支付和航班需要接入 Paystack/Flutterwave 和航空公司接口。',pass:'乘客',code:'订单码',same:'请选择两个不同的地点。',lgT:'登录 2 Night',lgSub:'输入手机号，我们将发送验证码（OTP）。',sendC:'发送 OTP 验证码',codeSub:'请输入发送至以下号码的6位验证码',verify:'验证',resend:'重新发送',change:'更换号码',demo:'演示：尚未连接短信服务器，验证码是：',badNum:'手机号无效。',badCode:'验证码错误。',tooMany:'尝试次数过多，请重新获取验证码。',expired:'验证码已过期，请重新获取。',logout:'退出',nameReq:'请输入姓名。'},
+es:{nTix:'Vuelos',tix:'Comprar billetes de avión',tixSub:'Elige origen, destino y fecha, y compra tu billete.',search:'Buscar vuelos',from:'Desde',to:'Hasta',eco:'Turista',biz:'Business',pax:'pas.',book:'Elegir',name:'Nombre completo (como en el ID)',pay:'Pagar',cancel:'Cancelar',myT:'Mis billetes',noT:'Aún no hay billetes',fareNote:'Tarifas de ejemplo. El pago y los vuelos reales requieren Paystack/Flutterwave y una API de aerolínea.',pass:'Pasajero',code:'Código de reserva',same:'Elige dos lugares distintos.',lgT:'Entrar a 2 Night',lgSub:'Introduce tu número y enviaremos un código de verificación (OTP).',sendC:'Enviar código OTP',codeSub:'Introduce el código de 6 dígitos enviado a',verify:'Verificar',resend:'Reenviar',change:'Cambiar número',demo:'DEMO: aún no hay servidor SMS conectado, el código es:',badNum:'Número no válido.',badCode:'Código OTP incorrecto.',tooMany:'Demasiados intentos. Pide un código nuevo.',expired:'Código caducado. Pide uno nuevo.',logout:'Salir',nameReq:'Escribe un nombre.'}
+};
+Object.keys(L2).forEach(function(k){Object.assign(L[k],L2[k])});
+var KB={ha:'ɓ ɗ ƙ ƴ ’ ? ! ,'.split(' '),en:'? ! , . ’ " : ;'.split(' '),ar:'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي ء ة ى ؟ ،'.split(' '),fr:'é è ê à â ç î ô ù û œ ë ï « »'.split(' '),zh:'你 好 我 爱 谢 是 的 不 们 吗 家 朋 友 想 。 ， ！ ？'.split(' '),es:'á é í ó ú ñ ü ¿ ¡'.split(' ')};
+var places=[['Kano','🕌',0,'3.4k'],['Lagos','🌆',1000,'9.1k'],['Niamey','🏜️',900,'1.8k'],['Makka','🕋',4300,'22k'],['Paris','🗼',4800,'7.5k'],['Tokyo','🗾',12000,'14k'],['Moon','🌙',384000,'12']];
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var lg=ld('lang','ha'),kl=ld('kl',lg),cur=0,sel=1,flying=false,arrived=false,roomPlace=null,gen='w',pi=0,likes=0;
+var T=function(k){return L[lg][k]};
+
+function go(id){
+  document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('active',b.dataset.s===id)});
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('active',s.id===id)});
+  document.getElementById('cbar').classList.toggle('show',id==='room');
+  document.getElementById('kb').classList.toggle('show',id==='room');
+  if(id==='room'){var r=document.getElementById('room');r.scrollTop=r.scrollHeight}
+}
+document.querySelectorAll('.nav button').forEach(function(b){b.onclick=function(){go(b.dataset.s)}});
+
+/* language */
+function applyLang(){
+  document.documentElement.lang=lg;document.documentElement.dir=lg==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-i]').forEach(function(e){e.textContent=(e.dataset.e||'')+T(e.dataset.i)});
+  document.getElementById('msg').placeholder=T('ph');
+  document.getElementById('goBtn').textContent=flying?T('flying'):T('go');
+  roomTitle();renderF();renderVault();showP();renderArrive();renderFlightsUI();
+}
+function roomTitle(){document.getElementById('roomName').textContent='🌍 '+(roomPlace===null?'Global Room':T('room')+' '+places[roomPlace][0])}
+document.getElementById('lang').onchange=function(e){lg=e.target.value;sv('lang',lg);kl=lg;sv('kl',kl);document.getElementById('kbLang').value=kl;renderKeys();applyLang()};
+document.getElementById('kbLang').onchange=function(e){kl=e.target.value;sv('kl',kl);renderKeys()};
+function renderKeys(){
+  var k=document.getElementById('keys');k.innerHTML='';
+  document.getElementById('msg').lang=kl;
+  KB[kl].forEach(function(c){var b=document.createElement('button');b.textContent=c;
+    b.onmousedown=function(e){e.preventDefault()};
+    b.onclick=function(){var i=document.getElementById('msg'),s=i.selectionStart==null?i.value.length:i.selectionStart,e2=i.selectionEnd==null?s:i.selectionEnd;
+      i.value=i.value.slice(0,s)+c+i.value.slice(e2);i.focus();i.setSelectionRange(s+c.length,s+c.length)};k.appendChild(b)});
+}
+
+/* fly */
+var cv=document.getElementById('sky'),cx=cv.getContext('2d'),W,H,speed=1,t0=0,dur=3500,stars=[],clouds=[];
+function size(){W=cv.width=cv.clientWidth*devicePixelRatio;H=cv.height=cv.clientHeight*devicePixelRatio}
+size();window.addEventListener('resize',size);
+for(var i=0;i<120;i++)stars.push({x:Math.random(),y:Math.random(),z:Math.random()*.9+.1});
+for(i=0;i<8;i++)clouds.push({x:Math.random(),y:Math.random(),s:Math.random()*.6+.4});
+function renderDests(){
+  var d=document.getElementById('dests');d.innerHTML='';
+  places.forEach(function(p,i){var b=document.createElement('button');b.className='dest'+(i===sel?' sel':'');
+    b.textContent=p[1]+' '+p[0];b.onclick=function(){if(!flying){sel=i;renderDests()}};d.appendChild(b)});
+}
+renderDests();
+function draw(now){
+  var D=devicePixelRatio;cx.clearRect(0,0,W,H);
+  var g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#02030a');g.addColorStop(.6,'#0a1640');g.addColorStop(1,'#3a0e22');
+  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  stars.forEach(function(s){s.y+=s.z*.0015*speed;if(s.y>1){s.y=0;s.x=Math.random()}
+    cx.fillStyle='rgba(246,222,141,'+(.25+s.z*.7)+')';cx.fillRect(s.x*W,s.y*H,s.z*2*D,s.z*(2+speed*1.6)*D)});
+  var lift=flying?Math.min(1,(now-t0)/dur):0,ph=flying?Math.sin(lift*Math.PI):0;
+  clouds.forEach(function(c){c.y+=.004*speed*c.s;if(c.y>1.1){c.y=-.1;c.x=Math.random()}
+    cx.fillStyle='rgba(255,255,255,'+(.1*(1-ph*.8))+')';cx.beginPath();cx.ellipse(c.x*W,c.y*H,70*c.s*D,18*c.s*D,0,0,7);cx.fill()});
+  var ey=H*(.92+ph*.35),eg=cx.createRadialGradient(W/2,ey,W*.2,W/2,ey,W*.9);
+  eg.addColorStop(0,'#1b5cff');eg.addColorStop(.7,'#0a2a78');eg.addColorStop(.9,'rgba(212,175,55,.5)');eg.addColorStop(1,'rgba(212,175,55,0)');
+  cx.fillStyle=eg;cx.beginPath();cx.arc(W/2,ey,W*.9,0,7);cx.fill();
+  var y=H*(.55-ph*.12)+Math.sin(now/300)*4;cx.font=(46*D)+'px serif';cx.textAlign='center';cx.fillText(flying?'🧑‍🚀':'🧍',W/2,y);
+  if(flying){
+    var gl=cx.createRadialGradient(W/2,y+30,0,W/2,y+30,70*D);gl.addColorStop(0,'rgba(246,222,141,.6)');gl.addColorStop(1,'rgba(246,222,141,0)');
+    cx.fillStyle=gl;cx.fillRect(0,0,W,H);
+    document.getElementById('prog').style.width=(lift*100)+'%';
+    document.getElementById('hAlt').textContent=Math.round(ph*400)+' km';
+    document.getElementById('hSpd').textContent=Math.round(speed*3000)+' km/s';
+    speed=1+ph*14;if(lift>=1)land();
+  }
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+function takeoff(){if(flying||sel===cur)return;flying=true;t0=performance.now();arrived=false;
+  var b=document.getElementById('goBtn');b.disabled=true;b.textContent=T('flying');document.getElementById('arrive').style.display='none'}
+function land(){
+  flying=false;speed=1;cur=sel;arrived=true;
+  document.getElementById('hLoc').textContent=places[cur][0];document.getElementById('hAlt').textContent='0 km';document.getElementById('hSpd').textContent='0';
+  document.getElementById('prog').style.width='0';var b=document.getElementById('goBtn');b.disabled=false;b.textContent=T('go');
+  var a=document.getElementById('aAvs');a.innerHTML='';
+  ['🧑🏾','👩🏾','🧔🏾','👩🏾‍🦱','🧑🏾‍🎤'].forEach(function(x){var s=document.createElement('span');s.textContent=x;a.appendChild(s)});
+  renderArrive();addEarn(10);
+}
+function renderArrive(){
+  var el=document.getElementById('arrive');if(!arrived){el.style.display='none';return}
+  var p=places[cur];el.style.display='block';
+  document.getElementById('aTitle').textContent=T('arr')+' '+p[0]+' '+p[1];
+  document.getElementById('aSub').textContent=p[3]+' '+T('arrSub');
+}
+function joinPlace(){roomPlace=cur;document.getElementById('onl').textContent=places[cur][3];roomTitle();go('room')}
+
+/* chat */
+var msgs=ld('msgs',null)||[{n:'Amina',t:T('hi')}];
+function renderChat(){
+  var b=document.getElementById('chatBox');b.innerHTML='';
+  msgs.forEach(function(m){var d=document.createElement('div');d.className='bub'+(m.me?' me':'');
+    var s=document.createElement('small');s.textContent=m.me?'Me':m.n;d.appendChild(s);d.appendChild(document.createTextNode(m.t));b.appendChild(d)});
+  var r=document.getElementById('room');r.scrollTop=r.scrollHeight;
+}
+function sendMsg(){var i=document.getElementById('msg'),t=i.value.trim();if(!t)return;
+  msgs.push({me:true,t:t});if(msgs.length>100)msgs.shift();sv('msgs',msgs);i.value='';renderChat()}
+document.getElementById('msg').onkeydown=function(e){if(e.key==='Enter')sendMsg()};
+
+/* vault */
+var vault=ld('vault',[]);
+function renderVault(){
+  var g=document.getElementById('vGrid');g.innerHTML='';
+  if(!vault.length){var e=document.createElement('div');e.className='vi';e.textContent=T('empty');g.appendChild(e);return}
+  vault.forEach(function(src,i){var d=document.createElement('div');d.className='vi';var im=document.createElement('img');im.src=src;
+    var x=document.createElement('button');x.className='del';x.textContent='✕';x.onclick=function(){vault.splice(i,1);sv('vault',vault);renderVault()};
+    d.appendChild(im);d.appendChild(x);g.appendChild(d)});
+}
+document.getElementById('fileInput').onchange=function(e){
+  var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,600/Math.max(im.width,im.height)),c=document.createElement('canvas');
+    c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    vault.push(c.toDataURL('image/jpeg',.7));sv('vault',vault);renderVault()};im.src=r.result};
+  r.readAsDataURL(f);e.target.value='';
+};
+
+/* aure */
+var ppl={w:[['Fatima',24,'Kano','👩🏾'],['Hauwa',26,'Kaduna','👩🏾‍🦱'],['Zainab',23,'Abuja','🧕🏾']],m:[['Ibrahim',28,'Kano','🧔🏾'],['Yusuf',30,'Zaria','👨🏾'],['Abdul',27,'Katsina','🧑🏾']]};
+function setG(g){gen=g;pi=0;document.getElementById('tW').classList.toggle('on',g==='w');document.getElementById('tM').classList.toggle('on',g==='m');showP()}
+function showP(){var p=ppl[gen][pi%3];document.getElementById('pEm').textContent=p[3];document.getElementById('pN').textContent=p[0]+', '+p[1];
+  document.getElementById('pI').textContent='📍 '+p[2]+' · 94% '+T('fit');document.getElementById('lk').textContent=T('liked')+': '+likes}
+function swipe(l){if(l)likes++;pi++;showP()}
+
+/* future */
+var on=ld('feat',{});
+function renderF(){
+  var l=document.getElementById('fList');l.innerHTML='';var ic=['🧑‍🚀','🫥','🌐','🔮','🛰️'];
+  T('F').forEach(function(f,i){
+    var c=document.createElement('div');c.className='glass';var r=document.createElement('div');r.className='fut';
+    var i1=document.createElement('div');i1.className='ic';i1.textContent=ic[i];
+    var tx=document.createElement('div');var b=document.createElement('b');b.textContent=f[0];
+    var tg=document.createElement('span');tg.className='tag';tg.textContent=i===0?T('now'):T('soon');b.appendChild(tg);
+    var p=document.createElement('p');p.textContent=f[1];tx.appendChild(b);tx.appendChild(p);
+    var sw=document.createElement('button');sw.className='sw'+(on[i]?' on':'');sw.onclick=function(){on[i]=!on[i];sv('feat',on);renderF()};
+    r.appendChild(i1);r.appendChild(tx);r.appendChild(sw);c.appendChild(r);l.appendChild(c)});
+}
+
+/* ===== OTP login ===== */
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var user=ld('user',null),otp=null,otpT=0,tries=0,cd=0,cdI=null,fullPhone='';
+function lgErr(k){document.getElementById('lgErr').textContent=k?T(k):''}
+function showLogin(){document.getElementById('ov').classList.add('show');document.getElementById('lgS1').style.display='block';document.getElementById('lgS2').style.display='none';lgErr()}
+function rsTxt(){var b=document.getElementById('rsBtn');b.textContent=T('resend')+(cd>0?' ('+cd+')':'');b.disabled=cd>0}
+function sendOtp(re){
+  if(!re){var d=document.getElementById('ph').value.replace(/\D/g,'').replace(/^0+/,'');
+    if(d.length<7||d.length>11){lgErr('badNum');return}
+    fullPhone='+'+document.getElementById('cc').value+d}
+  else if(cd>0)return;
+  var a=new Uint32Array(1);crypto.getRandomValues(a);otp=String(100000+a[0]%900000);otpT=Date.now()+300000;tries=0;
+  document.getElementById('lgS1').style.display='none';document.getElementById('lgS2').style.display='block';
+  document.getElementById('lgPh').textContent=fullPhone;document.getElementById('demoB').textContent=T('demo')+' '+otp;
+  document.getElementById('otpIn').value='';lgErr();
+  cd=30;rsTxt();clearInterval(cdI);cdI=setInterval(function(){cd--;rsTxt();if(cd<=0)clearInterval(cdI)},1000);
+}
+function verifyOtp(){
+  if(!otp||Date.now()>otpT){lgErr('expired');return}
+  if(tries>=5){lgErr('tooMany');return}
+  if(document.getElementById('otpIn').value.trim()===otp){user={phone:fullPhone};sv('user',user);otp=null;document.getElementById('ov').classList.remove('show');renderFlightsUI()}
+  else{tries++;lgErr(tries>=5?'tooMany':'badCode')}
+}
+function logout(){user=null;sv('user',null);document.getElementById('ph').value='';showLogin();go('fly')}
+document.getElementById('lang2').onchange=function(e){var s=document.getElementById('lang');s.value=e.target.value;s.onchange({target:s})};
+
+/* ===== Flights ===== */
+var CT=[['Kano',12,8.5],['Lagos',6.5,3.4],['Abuja',9.1,7.5],['Niamey',13.5,2.1],['Jeddah',21.5,39.2],['Dubai',25.2,55.3],['Paris',48.9,2.4],['London',51.5,-0.1]];
+var fl=null,bk=null,tix=ld('tix',[]);
+function km(a,b){var r=Math.PI/180,x=(b[1]-a[1])*r,y=(b[2]-a[2])*r,h=Math.pow(Math.sin(x/2),2)+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.pow(Math.sin(y/2),2);return 12742*Math.asin(Math.sqrt(h))}
+function hs(s){var x=0;for(var i=0;i<s.length;i++)x=(x*31+s.charCodeAt(i))>>>0;return x}
+function pad(n){return (n<10?'0':'')+n}
+(function(){var f=document.getElementById('fFrom'),t=document.getElementById('fTo');
+  CT.forEach(function(c,i){f.appendChild(new Option(c[0],i));t.appendChild(new Option(c[0],i))});t.value=1;
+  var d=document.getElementById('fDate');d.min=new Date().toISOString().slice(0,10);d.value=new Date(Date.now()+864e5).toISOString().slice(0,10)})();
+function searchF(){
+  var a=+document.getElementById('fFrom').value,b=+document.getElementById('fTo').value,date=document.getElementById('fDate').value,cl=+document.getElementById('fCls').value,px=+document.getElementById('fPax').value;
+  bk=null;if(a===b||!date){fl={err:1};renderResults();return}
+  var d=km(CT[a],CT[b]),base=45000+d*95,seed=hs(a+'-'+b+date),names=['Sky Gold','Blue Wing','Wine Jet'],deps=[[6,15],[12,40],[19,5]],m=[1,.9,1.15],mins=Math.round(d/800*60+45);
+  fl={from:CT[a][0],to:CT[b][0],date:date,cls:cl,pax:px,list:names.map(function(n,i){
+    var tot=deps[i][0]*60+deps[i][1]+mins,ar=tot%1440;
+    return{air:n,dep:pad(deps[i][0])+':'+pad(deps[i][1]),arr:pad(Math.floor(ar/60))+':'+pad(ar%60),dur:Math.floor(mins/60)+'h '+pad(mins%60)+'m',price:Math.round(base*m[i]*(.95+(seed%10)/100)*(cl?2.6:1)/500)*500}})};
+  renderResults();
+}
+function renderResults(){
+  var r=document.getElementById('fRes');r.innerHTML='';if(!fl)return;
+  if(fl.err){r.appendChild(el('div','glass',T('same')));return}
+  if(bk!==null){var f=fl.list[bk],g=el('div','glass');g.appendChild(el('b','',fl.from+' → '+fl.to+' · '+fl.date+' · '+f.dep));
+    var i=document.createElement('input');i.type='text';i.id='bName';i.placeholder=T('name');i.dir='auto';i.style.marginTop='10px';g.appendChild(i);
+    var p=el('button','btn',T('pay')+' ₦'+(f.price*fl.pax).toLocaleString());p.style.marginTop='10px';p.onclick=pay;
+    var c=el('button','btn ghost',T('cancel'));c.style.marginTop='8px';c.onclick=function(){bk=null;renderResults()};
+    g.appendChild(p);g.appendChild(c);r.appendChild(g);return}
+  fl.list.forEach(function(f,i){var g=el('div','glass'),row=el('div','fr'),l=el('div');
+    l.appendChild(el('b','',f.air));l.appendChild(el('div','sub',f.dep+' → '+f.arr+' · '+f.dur));l.lastChild.style.margin='2px 0 0';
+    var pr=el('div','pr','₦'+f.price.toLocaleString());row.appendChild(l);row.appendChild(pr);g.appendChild(row);
+    var b=el('button','btn',T('book'));b.style.marginTop='10px';b.onclick=function(){bk=i;renderResults()};g.appendChild(b);r.appendChild(g)});
+}
+function pay(){
+  var nm=document.getElementById('bName').value.trim();if(!nm){document.getElementById('bName').placeholder=T('nameReq');return}
+  var f=fl.list[bk],a=new Uint8Array(6);crypto.getRandomValues(a);
+  var code='N2-'+Array.prototype.map.call(a,function(x){return 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[x%32]}).join('');
+  tix.unshift({code:code,from:fl.from,to:fl.to,date:fl.date,dep:f.dep,arr:f.arr,air:f.air,cls:fl.cls,pax:fl.pax,name:nm,price:f.price*fl.pax});
+  sv('tix',tix);bk=null;fl=null;renderResults();renderTickets();
+}
+function renderTickets(){
+  var w=document.getElementById('fTix');w.innerHTML='';
+  if(!tix.length){w.appendChild(el('p','sub',T('noT')));return}
+  tix.forEach(function(t){var c=el('div','bp');c.appendChild(el('div','rt',t.from+' ✈ '+t.to));
+    c.appendChild(el('div','sub',t.air+' · '+t.date+' · '+t.dep+' → '+t.arr+' · '+(t.cls?T('biz'):T('eco'))));
+    var d=el('div','dl');d.appendChild(el('span','',T('pass')+': '+t.name+' ×'+t.pax));d.appendChild(el('span','',T('code')+': '+t.code));d.appendChild(el('span','','₦'+t.price.toLocaleString()));
+    c.appendChild(d);w.appendChild(c)});
+}
+function renderFlightsUI(){
+  var c=document.getElementById('fCls'),v=c.value||'0';c.innerHTML='';c.appendChild(new Option(T('eco'),0));c.appendChild(new Option(T('biz'),1));c.value=v;
+  var p=document.getElementById('fPax'),pv=p.value||'1';p.innerHTML='';for(var i=1;i<=5;i++)p.appendChild(new Option(i+' '+T('pax'),i));p.value=pv;
+  document.getElementById('lang2').value=lg;rsTxt();
+  document.getElementById('outBtn').textContent=(user?user.phone+' · ':'')+T('logout');
+  renderResults();renderTickets();
+}
+if(!user)showLogin();
+
+/* earn */
+var earn=ld('earn',0);
+function addEarn(n){earn+=n;sv('earn',earn);document.getElementById('coin').textContent='₦'+earn}
+document.getElementById('coin').textContent='₦'+earn;
+
+document.getElementById('lang').value=lg;document.getElementById('kbLang').value=kl;
+renderChat();renderKeys();applyLang();
+</script>
+</body>
+</html>
